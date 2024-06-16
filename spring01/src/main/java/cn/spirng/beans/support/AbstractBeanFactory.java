@@ -1,8 +1,8 @@
-package cn.spirng.factory.support;
+package cn.spirng.beans.support;
 
 import cn.spirng.BeansException;
-import cn.spirng.factory.BeanFactory;
-import cn.spirng.factory.factory.BeanDefinition;
+import cn.spirng.beans.BeanFactory;
+import cn.spirng.beans.factory.BeanDefinition;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 

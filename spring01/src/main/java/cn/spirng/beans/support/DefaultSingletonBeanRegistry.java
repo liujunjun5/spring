@@ -1,6 +1,6 @@
-package cn.spirng.factory.support;
+package cn.spirng.beans.support;
 
-import cn.spirng.factory.factory.SingletonBeanRegistry;
+import cn.spirng.beans.factory.SingletonBeanRegistry;
 
 import java.util.HashMap;
 import java.util.Map;

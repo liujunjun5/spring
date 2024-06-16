@@ -1,6 +1,10 @@
+import bean.UserDao;
 import bean.UserService;
-import cn.spirng.factory.factory.BeanDefinition;
-import cn.spirng.factory.support.DefaultListableBeanFactory;
+import cn.spirng.beans.PropertyValue;
+import cn.spirng.beans.factory.BeanDefinition;
+import cn.spirng.beans.factory.BeanReference;
+import cn.spirng.beans.support.DefaultListableBeanFactory;
+import cn.spirng.beans.support.PropertyValues;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import org.junit.Test;
@@ -67,6 +71,26 @@ public class ApiTest {
         UserService userService = declaredConstructor.newInstance("小傅哥");
         System.out.println(userService);
     }
+    @Test
+    public void test_BeanFactory1() {
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
+        // 2. UserDao 注册
+        beanFactory.registerBeanDefinition("userDao", new BeanDefinition(UserDao.class));
+
+        // 3. UserService 设置属性[uId、userDao]
+        PropertyValues propertyValues = new PropertyValues();
+        propertyValues.addPropertyValue(new PropertyValue("uId", "admin2"));
+        propertyValues.addPropertyValue(new PropertyValue("userDao",new BeanReference("userDao")));
+
+        // 4. UserService 注入bean
+        BeanDefinition beanDefinition = new BeanDefinition(UserService.class, propertyValues);
+        beanFactory.registerBeanDefinition("userService", beanDefinition);
+
+        // 5. UserService 获取bean
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
+    }
 }
 

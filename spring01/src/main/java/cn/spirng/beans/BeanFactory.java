@@ -1,4 +1,4 @@
-package cn.spirng.factory;
+package cn.spirng.beans;
 
 import cn.spirng.BeansException;
 

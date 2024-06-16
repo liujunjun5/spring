@@ -1,7 +1,7 @@
-package cn.spirng.factory.support;
+package cn.spirng.beans.support;
 
 import cn.spirng.BeansException;
-import cn.spirng.factory.factory.BeanDefinition;
+import cn.spirng.beans.factory.BeanDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
