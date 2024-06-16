@@ -1,7 +1,6 @@
 import bean.UserService;
-import cn.spirng.factory.BeanFactory;
-import cn.spirng.factory.config.BeanDefinition;
-import cn.spirng.factory.support.DefaultListableBeanFactory;
+import cn.spirng.beans.factory.BeanDefinition;
+import cn.spirng.beans.support.DefaultListableBeanFactory;
 import org.junit.Test;
 
 public class test {
@@ -9,15 +8,12 @@ public class test {
     public void test_BeanFactory(){
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
-        BeanDefinition beanDefinition = new BeanDefinition(new UserService().getClass());
+        BeanDefinition beanDefinition = new BeanDefinition(UserService.class);
         beanFactory.registerBeanDefinition("userService",beanDefinition);
 
-        UserService userService = (UserService) beanFactory.getBean("userService");
+        UserService userService = (UserService) beanFactory.getBean("userService","LiuJun");
         userService.queryUserInfo();
-
-        UserService userService1 = (UserService) beanFactory.getBean("userService");
-        userService1.queryUserInfo();
+        System.out.println(userService);
 
     }
-
 }
