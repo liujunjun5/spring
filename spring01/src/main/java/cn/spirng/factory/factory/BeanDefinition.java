@@ -1,4 +1,4 @@
-package cn.spirng.factory.config;
+package cn.spirng.factory.factory;
 
 public class BeanDefinition {
     //存储的对象

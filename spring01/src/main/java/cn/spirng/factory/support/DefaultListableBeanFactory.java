@@ -1,7 +1,7 @@
 package cn.spirng.factory.support;
 
 import cn.spirng.BeansException;
-import cn.spirng.factory.config.BeanDefinition;
+import cn.spirng.factory.factory.BeanDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
