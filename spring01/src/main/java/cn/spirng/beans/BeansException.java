@@ -1,4 +1,4 @@
-package cn.spirng;
+package cn.spirng.beans;
 
 public class BeansException extends RuntimeException {
 

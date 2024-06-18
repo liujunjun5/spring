@@ -1,4 +1,4 @@
-package cn.spirng.beans.factory;
+package cn.spirng.beans.factory.config;
 
 public class BeanReference {
 

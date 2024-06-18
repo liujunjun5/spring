@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDao {
-    private static Map<String, String> hashMap = new HashMap<String, String>();
+
+    private static Map<String, String> hashMap = new HashMap<>();
 
     static {
-        hashMap.put("user", "user");
-        hashMap.put("admin", "admin");
-        hashMap.put("user2", "user2");
-        hashMap.put("admin2", "admin2");
+        hashMap.put("10001", "小傅哥");
+        hashMap.put("10002", "八杯水");
+        hashMap.put("10003", "阿毛");
     }
 
-    public String queryUserName(String uid) {
-        return hashMap.get(uid);
+    public String queryUserName(String uId) {
+        return hashMap.get(uId);
     }
+
 }

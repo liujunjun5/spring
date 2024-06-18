@@ -1,6 +1,6 @@
-package cn.spirng.beans.factory;
+package cn.spirng.beans.factory.config;
 
-import cn.spirng.beans.support.PropertyValues;
+import cn.spirng.beans.PropertyValues;
 
 public class BeanDefinition {
     //存储的对象
