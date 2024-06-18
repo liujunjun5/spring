@@ -1,6 +1,6 @@
 import bean.UserService;
-import cn.spirng.beans.factory.BeanDefinition;
-import cn.spirng.beans.support.DefaultListableBeanFactory;
+import cn.spirng.beans.factory.config.BeanDefinition;
+import cn.spirng.beans.factory.support.DefaultListableBeanFactory;
 import org.junit.Test;
 
 public class test {

@@ -1,6 +1,4 @@
-package cn.spirng.beans.support;
-
-import cn.spirng.beans.PropertyValue;
+package cn.spirng.beans;
 
 import java.util.ArrayList;
 import java.util.List;
