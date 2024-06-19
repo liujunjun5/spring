@@ -1,12 +1,14 @@
 package cn.spirng.beans.factory.support;
 
 import cn.spirng.beans.BeansException;
+import cn.spirng.beans.factory.ConfigurableListableBeanFactory;
 import cn.spirng.beans.factory.config.BeanDefinition;
+import cn.spirng.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry {
+public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
 
     private Map<String, BeanDefinition> beanDefinitionMap = new HashMap<String, BeanDefinition>();
 
@@ -22,6 +24,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             throw new BeansException("No bean named '" + beanName + "' is defined");
         }
         return beanDefinition;
+    }
+
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        beanDefinitionMap.keySet().forEach(this::getBean);
     }
 
     @Override
@@ -45,4 +52,5 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         });
         return result;
     }
+
 }
