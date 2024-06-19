@@ -3,8 +3,15 @@ package cn.spirng.beans.factory.support;
 import cn.spirng.beans.BeansException;
 import cn.spirng.beans.factory.BeanFactory;
 import cn.spirng.beans.factory.config.BeanDefinition;
+import cn.spirng.beans.factory.config.BeanPostProcessor;
+import cn.spirng.beans.factory.config.ConfigurableBeanFactory;
 
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     @Override
     public Object getBean(String beanName) {
@@ -28,10 +35,18 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
         return (T) createBean(beanName, beanDefinition, args);
     }
-
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
 //    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException;
 
     protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
 }
