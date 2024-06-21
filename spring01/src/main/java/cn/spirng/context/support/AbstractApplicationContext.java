@@ -9,7 +9,7 @@ import cn.spirng.core.io.DefaultResourceLoader;
 
 import java.util.Map;
 
-public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
+public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext  {
     @Override
     public void refresh() throws BeansException {
         //创建 BeanFactory 加载 BeanDefinition
@@ -72,4 +72,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         return getBeanFactory().getBean(name, requiredType);
     }
 
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public void close() {
+        getBeanFactory().destroySingletons();
+    }
 }
