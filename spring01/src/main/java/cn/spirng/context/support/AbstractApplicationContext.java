@@ -4,6 +4,7 @@ import cn.spirng.beans.BeansException;
 import cn.spirng.beans.factory.ConfigurableListableBeanFactory;
 import cn.spirng.beans.factory.config.BeanFactoryPostProcessor;
 import cn.spirng.beans.factory.config.BeanPostProcessor;
+import cn.spirng.beans.factory.support.ApplicationContextAwareProcessor;
 import cn.spirng.context.ConfigurableApplicationContext;
 import cn.spirng.core.io.DefaultResourceLoader;
 
@@ -17,6 +18,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
         //获取 BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+
+        //添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
         //在 Bean 实例化之前，执行BeanFactoryPostProcessor
         invokeBeanFactoryPostProcessors(beanFactory);
