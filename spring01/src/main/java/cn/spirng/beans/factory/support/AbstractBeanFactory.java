@@ -1,16 +1,17 @@
 package cn.spirng.beans.factory.support;
 
 import cn.spirng.beans.BeansException;
-import cn.spirng.beans.factory.BeanFactory;
 import cn.spirng.beans.factory.config.BeanDefinition;
 import cn.spirng.beans.factory.config.BeanPostProcessor;
 import cn.spirng.beans.factory.config.ConfigurableBeanFactory;
+import cn.spirng.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
 
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     @Override
@@ -48,5 +49,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }
