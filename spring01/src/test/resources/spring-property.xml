@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean class="cn.spirng.beans.factory.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:token.properties"/>
+    </bean>
+
+    <bean id="userService" class="bean.annotation.UserService">
+        <property name="token" value="${token}"/>
+    </bean>
+
+</beans>
