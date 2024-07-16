@@ -5,10 +5,7 @@ import cn.spirng.beans.BeansException;
 import cn.spirng.beans.PropertyValue;
 import cn.spirng.beans.PropertyValues;
 import cn.spirng.beans.factory.*;
-import cn.spirng.beans.factory.config.AutowireCapableBeanFactory;
-import cn.spirng.beans.factory.config.BeanDefinition;
-import cn.spirng.beans.factory.config.BeanPostProcessor;
-import cn.spirng.beans.factory.config.BeanReference;
+import cn.spirng.beans.factory.config.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -22,6 +19,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (bean != null) {
+                return bean;
+            }
             bean = createBeanInstance(beanDefinition, beanName, args);
             //给bean填充属性
             applyPropertyValues(beanName, bean, beanDefinition);
@@ -38,6 +39,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
 
         return bean;
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (bean != null) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
     }
 
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
@@ -141,6 +161,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
         this.instantiationStrategy = instantiationStrategy;
     }
+
     @Override
     public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
         Object result = existingBean;

@@ -2,9 +2,17 @@
 <beans>
 
 <!--    <bean class="event.ContextRefreshedEventListener"/>-->
-
-    <bean class="event.CustomEventListener"/>
+    <bean id ="userService" class="bean.UserService"/>
+    <bean class="cn.spirng.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+    <bean id="beforeAdvice" class="bean.aop.UserServiceBeforeAdvice"/>
 
 <!--    <bean class="event.ContextClosedEventListener"/>-->
+    <bean id="methodInterceptor" class="cn.spirng.aop.framework.adapter.MethodBeforeAdviceInterceptor">
+        <property name="advice" ref="beforeAdvice"/>
+    </bean>
 
+    <bean id="pointcutAdvisor" class="cn.spirng.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* cn.spirng.springframework.test.bean.IUserService..*(..))"/>
+        <property name="advice" ref="methodInterceptor"/>
+    </bean>
 </beans>

@@ -1,19 +1,29 @@
 import bean.IUserService;
 import bean.UserService;
 import bean.UserServiceInterceptor;
+import bean.aop.UserServiceBeforeAdvice;
 import cn.spirng.TargetSource;
 import cn.spirng.aop.AdvisedSupport;
+import cn.spirng.aop.ClassFilter;
 import cn.spirng.aop.aspectj.AspectJExpressionPointcut;
+import cn.spirng.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import cn.spirng.aop.framework.Cglib2AopProxy;
 import cn.spirng.aop.framework.JdkDynamicAopProxy;
+import cn.spirng.aop.framework.ProxyFactory;
+import cn.spirng.aop.framework.adapter.MethodBeforeAdviceInterceptor;
 import cn.spirng.context.support.ClassPathXmlApplicationContext;
 import event.CustomEvent;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.junit.Before;
 import org.junit.Test;
 import org.openjdk.jol.info.ClassLayout;
+
 
 import java.lang.reflect.Method;
 
 public class ApiTest {
+    private AdvisedSupport advisedSupport;
+
     @Test
     public void test_prototype() {
         // 1.初始化 BeanFactory
@@ -61,6 +71,7 @@ public class ApiTest {
         System.out.println(pointcut.matches(clazz));
         System.out.println(pointcut.matches(method, clazz));
     }
+
     @Test
     public void test_dynamic() {
         // 目标对象
@@ -81,6 +92,66 @@ public class ApiTest {
         IUserService proxy_cglib = (IUserService) new Cglib2AopProxy(advisedSupport).getProxy();
 //         测试调用
         System.out.println("测试结果：" + proxy_cglib.register("花花"));
+    }
+
+    @Test
+    public void test_aop1() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+    @Before
+    public void init() {
+        // 目标对象
+        IUserService userService = new UserService();
+        // 组装代理信息
+        advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* bean.IUserService.*(..))"));
+    }
+
+    @Test
+    public void test_proxyFactory() {
+        advisedSupport.setProxyTargetClass(false); // false/true，JDK动态代理、CGlib动态代理
+        IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+
+        System.out.println("测试结果：" + proxy.queryUserInfo());
+    }
+
+    @Test
+    public void test_beforeAdvice() {
+        UserServiceBeforeAdvice beforeAdvice = new UserServiceBeforeAdvice();
+        MethodBeforeAdviceInterceptor interceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
+        advisedSupport.setMethodInterceptor(interceptor);
+
+        IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+        System.out.println("测试结果：" + proxy.queryUserInfo());
+    }
+
+    @Test
+    public void test_advisor() {
+        // 目标对象
+        IUserService userService = new UserService();
+
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setExpression("execution(* bean.IUserService.*(..))");
+        advisor.setAdvice(new MethodBeforeAdviceInterceptor(new UserServiceBeforeAdvice()));
+
+        ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+        if (classFilter.matches(userService.getClass())) {
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+
+            TargetSource targetSource = new TargetSource(userService);
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(true); // false/true，JDK动态代理、CGlib动态代理
+
+            IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+            System.out.println("测试结果：" + proxy.queryUserInfo());
+        }
     }
 }
 

@@ -30,12 +30,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
         return (T) getBean(beanName);
     }
     protected <T> T doGetBean(final String name, final Object[] args) {
-//        Object bean = getSingleton(beanName);
-//        if (bean!=null) {
-//            return (T) bean;
-//        }
-//        BeanDefinition beanDefinition = getBeanDefinition(beanName);
-//        return (T) createBean(beanName, beanDefinition, args);
         Object sharedInstance = getSingleton(name);
         if (sharedInstance != null) {
             // 如果是 FactoryBean，则需要调用 FactoryBean#getObject
@@ -60,11 +54,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
 
         return object;
     }
+
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
         this.beanPostProcessors.remove(beanPostProcessor);
         this.beanPostProcessors.add(beanPostProcessor);
     }
+
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
 //    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException;
